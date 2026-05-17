@@ -77,7 +77,7 @@ class STFTDiscriminator(nn.Module):
         self.win_length = win_length
         self.register_buffer("window", torch.hann_window(win_length))
 
-        self.first_conv = weight_norm(nn.Conv2d(1, C, kernel_size=7, padding=3))
+        self.first_conv = weight_norm(nn.Conv2d(2, C, kernel_size=7, padding=3))
 
         self.blocks = nn.ModuleList([
             ResidualUnit2D(C, m=2, s=(1, 2)),
@@ -93,13 +93,12 @@ class STFTDiscriminator(nn.Module):
     def forward(self, x):
         x = x.squeeze(1)
         stft = torch.stft(x, self.n_fft, self.hop_length, self.win_length, window=self.window, return_complex=True)
-        mag = stft.abs()
-        mag = mag[:, 1:, :]
-        mag = mag.transpose(1, 2)
-        mag = mag.unsqueeze(1)
+        stft = stft[:, 1:, :]
+        ri = torch.stack([stft.real, stft.imag], dim=1)
+        ri = ri.transpose(2, 3)
 
         features = []
-        x = self.first_conv(mag)
+        x = self.first_conv(ri)
         features.append(x)
         for block in self.blocks:
             x = block(x)

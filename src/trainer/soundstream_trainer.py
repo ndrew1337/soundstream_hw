@@ -75,6 +75,10 @@ class SoundStreamTrainer(BaseTrainer):
         self.g_scaler = torch.amp.GradScaler("cuda", enabled=self.use_amp)
         self.d_scaler = torch.amp.GradScaler("cuda", enabled=self.use_amp)
 
+        if getattr(self, "_pending_resume", None) is not None:
+            self._resume_checkpoint(self._pending_resume)
+            self._pending_resume = None
+
     def process_batch(self, batch, metrics: MetricTracker):
         batch = self.move_batch_to_device(batch)
         batch = self.transform_batch(batch)
@@ -328,6 +332,9 @@ class SoundStreamTrainer(BaseTrainer):
             self.logger.info("Saving current best: model_best.pth ...")
 
     def _resume_checkpoint(self, resume_path):
+        if not hasattr(self, "discriminator"):
+            self._pending_resume = resume_path
+            return
         resume_path = str(resume_path)
         self.logger.info(f"Loading checkpoint: {resume_path} ...")
         checkpoint = torch.load(resume_path, map_location=self.device, weights_only=False)

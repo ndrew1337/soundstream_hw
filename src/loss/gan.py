@@ -2,18 +2,24 @@ import torch.nn.functional as F
 
 
 def discriminator_hinge_loss(real_outputs, fake_outputs):
+    k = len(fake_outputs)
+    if k == 0:
+        return 0.0
     loss = 0.0
     for (real_logits, _), (fake_logits, _) in zip(real_outputs, fake_outputs):
         loss = loss + F.relu(1.0 - real_logits).mean()
         loss = loss + F.relu(1.0 + fake_logits).mean()
-    return loss
+    return loss / k
 
 
 def generator_hinge_loss(fake_outputs):
+    k = len(fake_outputs)
+    if k == 0:
+        return 0.0
     loss = 0.0
     for fake_logits, _ in fake_outputs:
         loss = loss + F.relu(1.0 - fake_logits).mean()
-    return loss
+    return loss / k
 
 
 def feature_matching_loss(real_outputs, fake_outputs):
