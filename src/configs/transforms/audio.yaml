@@ -1,0 +1,4 @@
+defaults:
+  - batch_transforms: audio
+  - instance_transforms: audio
+  - _self_

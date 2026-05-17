@@ -1,0 +1,5 @@
+train:
+  audio:
+    _target_: src.transforms.RandomCrop1D
+    crop_samples: 8000
+inference: null

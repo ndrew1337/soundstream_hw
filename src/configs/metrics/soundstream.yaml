@@ -1,0 +1,13 @@
+device: "auto"
+train: []
+inference:
+  - _target_: src.metrics.STOIMetric
+    sample_rate: 16000
+    device: ${metrics.device}
+    log_every_n_epochs: 1
+    name: "STOI"
+  - _target_: src.metrics.NISQAMetric
+    sample_rate: 16000
+    device: ${metrics.device}
+    log_every_n_epochs: 5
+    name: "NISQA"

@@ -1,0 +1,8 @@
+test:
+  _target_: src.datasets.LibrispeechDataset
+  part: test-clean
+  data_dir: /workspace/data
+  target_sr: 16000
+  sort_by_length: True
+  max_audio_length: 30.0
+  instance_transforms: ${transforms.instance_transforms.inference}

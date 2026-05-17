@@ -1,0 +1,6 @@
+_target_: src.loss.SoundStreamGeneratorLoss
+sample_rate: 16000
+lambda_recon: 1.0
+lambda_adv: 1.0
+lambda_fm: 100.0
+lambda_commit: 1.0

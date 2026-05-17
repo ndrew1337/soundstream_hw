@@ -1,0 +1,5 @@
+_target_: src.model.SoundStream
+channels: 32
+num_quantizers: 8
+num_embeddings: 1024
+embedding_dim: 128

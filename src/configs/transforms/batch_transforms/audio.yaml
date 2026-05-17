@@ -1,0 +1,6 @@
+train:
+  audio:
+    _target_: torch.nn.Sequential
+inference:
+  audio:
+    _target_: torch.nn.Sequential

@@ -1,0 +1,5 @@
+_target_: src.model.SoundStreamDiscriminator
+stft_n_fft: 1024
+stft_hop: 256
+stft_win: 1024
+stft_C: 32

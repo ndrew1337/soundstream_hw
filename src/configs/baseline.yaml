@@ -1,0 +1,34 @@
+defaults:
+  - model: soundstream
+  - discriminator: soundstream
+  - writer: wandb
+  - metrics: soundstream
+  - datasets: librispeech
+  - dataloader: audio
+  - transforms: audio
+  - g_loss: soundstream
+  - d_loss: soundstream
+  - g_optimizer: adam
+  - d_optimizer: adam
+  - g_lr_scheduler: constant
+  - d_lr_scheduler: constant
+  - _self_
+trainer:
+  log_step: 50
+  n_epochs: 70
+  epoch_len: 500
+  device_tensors: ["audio"] # which tensors should be on device (ex. GPU)
+  resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
+  device: auto # device name or "auto"
+  override: False # if True, will override the previous run with the same name
+  monitor: "max test_STOI" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
+  save_period: 5 # checkpoint each save_period epochs in addition to the best epoch
+  early_stop: ${trainer.n_epochs} # epochs for early stopping
+  save_dir: "saved"
+  seed: 1
+  max_grad_norm: 10.0
+  log_audio_count: 2
+  sample_rate: 16000
+  use_amp: True
+  log_visuals_hop: 128
+  log_audio_peak_normalize_preview: True

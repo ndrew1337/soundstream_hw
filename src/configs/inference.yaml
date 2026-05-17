@@ -1,0 +1,26 @@
+defaults:
+  - model: soundstream
+  - metrics: soundstream
+  - datasets: librispeech_test
+  - dataloader: audio_eval
+  - transforms: audio
+  - _self_
+inferencer:
+  device_tensors: ["audio"] # which tensors should be on device (ex. GPU)
+  device: auto # device name or "auto"
+  save_path: "test-clean" # any name here, can be a dataset name
+  seed: 1
+  from_pretrained: "saved/baseline/model_best.pth" # path to the pretrained model
+  sample_rate: 16000
+  save_audio: True
+  audio_mean: 0.0
+  audio_std: 1.0
+  save_visuals_count: 5
+  visuals_n_fft: 1024
+  visuals_hop: 128
+  visuals_n_mels: 80
+  visuals_f_min: 80.0
+  visuals_mel_dpi: 140
+  visuals_mel_figure_w: 12.0
+  visuals_mel_figure_h: 4.5
+  visuals_mel_interpolation: bilinear
