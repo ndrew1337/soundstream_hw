@@ -1,0 +1,34 @@
+defaults:
+  - model: soundstream
+  - discriminator: soundstream
+  - writer: wandb
+  - metrics: soundstream
+  - datasets: librispeech_train_only
+  - dataloader: audio
+  - transforms: audio
+  - g_loss: soundstream
+  - d_loss: soundstream
+  - g_optimizer: adam
+  - d_optimizer: adam
+  - g_lr_scheduler: constant
+  - d_lr_scheduler: constant
+  - _self_
+trainer:
+  log_step: 50
+  n_epochs: 90
+  epoch_len: 500
+  device_tensors: ["audio"]
+  resume_from: null
+  device: auto
+  override: False
+  monitor: "off"
+  save_period: ${trainer.n_epochs}
+  early_stop: ${trainer.n_epochs}
+  save_dir: "saved"
+  seed: 1
+  max_grad_norm: 10.0
+  log_audio_count: 0
+  sample_rate: 16000
+  use_amp: True
+  log_visuals_hop: 128
+  log_audio_peak_normalize_preview: True

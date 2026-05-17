@@ -1,0 +1,7 @@
+train:
+  _target_: src.datasets.LibrispeechDataset
+  part: train-clean-100
+  data_dir: /workspace/data
+  target_sr: 16000
+  shuffle_index: True
+  instance_transforms: ${transforms.instance_transforms.train}
