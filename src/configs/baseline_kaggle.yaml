@@ -15,7 +15,7 @@ defaults:
   - _self_
 trainer:
   log_step: 50
-  n_epochs: 90
+  n_epochs: 100
   epoch_len: 500
   device_tensors: ["audio"]
   resume_from: null
