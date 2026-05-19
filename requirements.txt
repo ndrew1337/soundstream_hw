@@ -4,6 +4,7 @@ torchaudio==2.7.1
 torchmetrics
 pystoi
 librosa
+soundfile
 requests
 numpy==1.26.4
 tqdm

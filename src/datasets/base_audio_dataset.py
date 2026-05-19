@@ -7,6 +7,8 @@ import torch
 import torchaudio
 from torch.utils.data import Dataset
 
+from src.utils.audio_io import load_audio_mono
+
 logger = logging.getLogger(__name__)
 
 
@@ -53,8 +55,7 @@ class BaseAudioDataset(Dataset):
         return instance_data
 
     def load_audio(self, path: str) -> torch.Tensor:
-        audio_tensor, sr = torchaudio.load(path)
-        audio_tensor = audio_tensor[:1, :]
+        audio_tensor, sr = load_audio_mono(path)
         if sr != self.target_sr:
             audio_tensor = torchaudio.functional.resample(
                 audio_tensor, sr, self.target_sr

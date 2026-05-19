@@ -1,8 +1,7 @@
 from pathlib import Path
 
-import torchaudio
-
 from src.datasets.base_audio_dataset import BaseAudioDataset
+from src.utils.audio_io import audio_duration_sec
 
 
 class CustomDirAudioDataset(BaseAudioDataset):
@@ -13,11 +12,10 @@ class CustomDirAudioDataset(BaseAudioDataset):
         for path in sorted(Path(audio_dir).iterdir()):
             if path.suffix.lower() not in self.AUDIO_EXTS:
                 continue
-            t_info = torchaudio.info(str(path))
             index.append(
                 {
                     "path": str(path.absolute().resolve()),
-                    "audio_len": t_info.num_frames / t_info.sample_rate,
+                    "audio_len": audio_duration_sec(path),
                 }
             )
         super().__init__(index, *args, **kwargs)

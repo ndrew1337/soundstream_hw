@@ -4,10 +4,10 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
-import torchaudio
 from tqdm import tqdm
 
 from src.datasets.base_audio_dataset import BaseAudioDataset
+from src.utils.audio_io import audio_duration_sec
 from src.utils.io_utils import ROOT_PATH
 
 URL_LINKS = {
@@ -104,8 +104,7 @@ class LibrispeechDataset(BaseAudioDataset):
         ):
             flac_dir = Path(flac_dir)
             for flac_path in sorted(flac_dir.glob("*.flac")):
-                t_info = torchaudio.info(str(flac_path))
-                length = t_info.num_frames / t_info.sample_rate
+                length = audio_duration_sec(flac_path)
                 index.append(
                     {
                         "path": str(flac_path.absolute().resolve()),
