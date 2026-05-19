@@ -3,7 +3,7 @@ defaults:
   - discriminator: soundstream
   - writer: wandb
   - metrics: soundstream
-  - datasets: librispeech_train_only
+  - datasets: librispeech
   - dataloader: audio
   - transforms: audio
   - g_loss: soundstream
@@ -15,19 +15,19 @@ defaults:
   - _self_
 trainer:
   log_step: 50
-  n_epochs: 100
+  n_epochs: 120
   epoch_len: 500
   device_tensors: ["audio"]
   resume_from: null
   device: auto
   override: False
-  monitor: "off"
-  save_period: ${trainer.n_epochs}
+  monitor: "max test_STOI"
+  save_period: 5
   early_stop: ${trainer.n_epochs}
   save_dir: "saved"
   seed: 1
   max_grad_norm: 10.0
-  log_audio_count: 0
+  log_audio_count: 2
   sample_rate: 16000
   use_amp: True
   log_visuals_hop: 128
