@@ -1,0 +1,51 @@
+defaults:
+  - model: soundstream
+  - discriminator: soundstream
+  - writer: wandb
+  - metrics: soundstream
+  - datasets: librispeech
+  - dataloader: audio
+  - transforms: audio
+  - g_loss: soundstream
+  - d_loss: soundstream
+  - g_optimizer: adam
+  - d_optimizer: adam
+  - g_lr_scheduler: constant
+  - d_lr_scheduler: constant
+  - _self_
+g_loss:
+  _target_: src.loss.SoundStreamGeneratorLoss
+  sample_rate: 16000
+  lambda_recon: 1.0
+  lambda_adv: 0.0
+  lambda_fm: 0.0
+  lambda_commit: 1.0
+writer:
+  _target_: src.logger.WandBWriter
+  project_name: "hw04-soundstream"
+  entity: null
+  run_name: "v4-no-gan-100ep"
+  mode: "online"
+  loss_names: ["loss", "loss_recon", "loss_commit"]
+  log_checkpoints: False
+  id_length: 32
+trainer:
+  log_step: 50
+  n_epochs: 100
+  epoch_len: 500
+  device_tensors: ["audio"]
+  resume_from: null
+  device: auto
+  override: True
+  monitor: "max test_STOI"
+  save_period: 10
+  early_stop: ${trainer.n_epochs}
+  save_dir: "saved"
+  seed: 1
+  max_grad_norm: 10.0
+  log_audio_count: 2
+  sample_rate: 16000
+  use_amp: True
+  log_visuals_hop: 128
+  log_audio_peak_normalize_preview: True
+  train_discriminator: False

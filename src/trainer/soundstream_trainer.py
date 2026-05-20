@@ -211,6 +211,7 @@ class SoundStreamTrainer(BaseTrainer):
         if "x_fake" in batch and "audio" in batch:
             x_real = batch["audio"]
             x_fake = batch["x_fake"]
+            audio_lens = batch.get("audio_len")
             n = min(self.log_audio_count, x_real.shape[0])
             log_real = not (
                 self.log_real_audio_once and self._logged_real_audio.get(mode, False)
@@ -222,9 +223,16 @@ class SoundStreamTrainer(BaseTrainer):
             pn = self.log_audio_peak_normalize_preview
 
             for i in range(n):
+                if audio_lens is not None:
+                    length = int(audio_lens[i].item())
+                    x_real_i = x_real[i, ..., :length]
+                    x_fake_i = x_fake[i, ..., :length]
+                else:
+                    x_real_i = x_real[i]
+                    x_fake_i = x_fake[i]
                 visuals = compute_pair_visuals(
-                    x_real=x_real[i],
-                    x_fake=x_fake[i],
+                    x_real=x_real_i,
+                    x_fake=x_fake_i,
                     sample_rate=self.sample_rate,
                     n_fft=self.log_visuals_n_fft,
                     hop_length=self.log_visuals_hop,

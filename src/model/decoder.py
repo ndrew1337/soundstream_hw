@@ -6,17 +6,18 @@ from src.model.residual_unit import ResidualUnit
 
 
 class DecoderBlock(nn.Module):
-    def __init__(self, N, S):
+    def __init__(self, N, S, causal=True):
         super().__init__()
         self.conv_transpose = CausalConvTranspose1d(
             in_channels=N,
             out_channels=N // 2,
             kernel_size=2 * S,
             stride=S,
+            causal=causal,
         )
-        self.res_unit1 = ResidualUnit(N // 2, dilation=1)
-        self.res_unit2 = ResidualUnit(N // 2, dilation=3)
-        self.res_unit3 = ResidualUnit(N // 2, dilation=9)
+        self.res_unit1 = ResidualUnit(N // 2, dilation=1, causal=causal)
+        self.res_unit2 = ResidualUnit(N // 2, dilation=3, causal=causal)
+        self.res_unit3 = ResidualUnit(N // 2, dilation=9, causal=causal)
 
     def forward(self, x):
         x = self.conv_transpose(F.elu(x))
@@ -27,16 +28,18 @@ class DecoderBlock(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, C, K):
+    def __init__(self, C, K, causal=True):
         super().__init__()
-        self.conv1 = CausalConv1d(kernel_size=7, in_channels=K, out_channels=16 * C)
-        self.decoder_blocks = nn.Sequential(
-            DecoderBlock(16 * C, 5),
-            DecoderBlock(8 * C, 5),
-            DecoderBlock(4 * C, 4),
-            DecoderBlock(2 * C, 2),
+        self.conv1 = CausalConv1d(
+            kernel_size=7, in_channels=K, out_channels=16 * C, causal=causal
         )
-        self.conv2 = CausalConv1d(kernel_size=7, in_channels=C, out_channels=1)
+        self.decoder_blocks = nn.Sequential(
+            DecoderBlock(16 * C, 5, causal=causal),
+            DecoderBlock(8 * C, 5, causal=causal),
+            DecoderBlock(4 * C, 4, causal=causal),
+            DecoderBlock(2 * C, 2, causal=causal),
+        )
+        self.conv2 = CausalConv1d(kernel_size=7, in_channels=C, out_channels=1, causal=causal)
 
     def forward(self, x):
         x = self.conv1(x)

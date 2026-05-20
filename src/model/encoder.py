@@ -6,17 +6,18 @@ from src.model.residual_unit import ResidualUnit
 
 
 class EncoderBlock(nn.Module):
-    def __init__(self, N, S):
+    def __init__(self, N, S, causal=True):
         super().__init__()
         self.elu = nn.ELU()
-        self.res_unit1 = ResidualUnit(N // 2, dilation=1)
-        self.res_unit2 = ResidualUnit(N // 2, dilation=3)
-        self.res_unit3 = ResidualUnit(N // 2, dilation=9)
+        self.res_unit1 = ResidualUnit(N // 2, dilation=1, causal=causal)
+        self.res_unit2 = ResidualUnit(N // 2, dilation=3, causal=causal)
+        self.res_unit3 = ResidualUnit(N // 2, dilation=9, causal=causal)
         self.conv = CausalConv1d(
             kernel_size=2 * S,
             in_channels=N // 2,
             out_channels=N,
             stride=S,
+            causal=causal,
         )
 
     def forward(self, x):
@@ -28,16 +29,18 @@ class EncoderBlock(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, C, K):
+    def __init__(self, C, K, causal=True):
         super().__init__()
-        self.conv1 = CausalConv1d(kernel_size=7, in_channels=1, out_channels=C)
+        self.conv1 = CausalConv1d(kernel_size=7, in_channels=1, out_channels=C, causal=causal)
         self.encoder_blocks = nn.Sequential(
-            EncoderBlock(2 * C, 2),
-            EncoderBlock(4 * C, 4),
-            EncoderBlock(8 * C, 5),
-            EncoderBlock(16 * C, 5),
+            EncoderBlock(2 * C, 2, causal=causal),
+            EncoderBlock(4 * C, 4, causal=causal),
+            EncoderBlock(8 * C, 5, causal=causal),
+            EncoderBlock(16 * C, 5, causal=causal),
         )
-        self.conv2 = CausalConv1d(kernel_size=3, in_channels=16 * C, out_channels=K)
+        self.conv2 = CausalConv1d(
+            kernel_size=3, in_channels=16 * C, out_channels=K, causal=causal
+        )
 
     def forward(self, x):
         x = self.conv1(x)
