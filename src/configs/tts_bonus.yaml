@@ -1,0 +1,55 @@
+defaults:
+  - writer: wandb
+  - _self_
+writer:
+  run_name: "v5-bonus"
+  loss_names: ["loss"]
+trainer:
+  save_dir: "saved"
+  resume_from: null
+  override: True
+  device: auto
+  seed: 42
+  log_step: 25
+  eval_step: 1000
+  save_step: 1000
+  audio_n_eval_samples: 40
+  audio_n_log_samples: 2
+  audio_eval_seed: 0
+  max_steps: 6000
+  warmup_steps: 500
+  batch_size: 8
+  grad_accum_steps: 4
+  lr: 3.0e-4
+  weight_decay: 0.01
+  clip_grad_norm: 1.0
+  max_seq_len: 1024
+  num_workers: 2
+tts:
+  xcodec_model_id: "hf-audio/xcodec-hubert-librispeech"
+  lm_model_id: "HuggingFaceTB/SmolLM2-135M"
+  bandwidth: 0.5
+  codebook_size: 1024
+  xcodec_sr: 16000
+  data_root: "data/ljspeech_raw/LJSpeech-1.1"
+  codes_cache: "data/ljspeech_codes"
+  metadata_csv: "data/ljspeech_codes/metadata.csv"
+  holdout_size: 500
+  audio_start_token: "<|audio_start|>"
+  audio_end_token: "<|audio_end|>"
+  mode: "lora"
+  audio_embed_init: "codebook"
+  audio_embed_init_seed: 0
+  lora_r: 64
+  lora_alpha: 128
+  lora_dropout: 0.05
+  lora_target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+  generate_max_new_tokens: 600
+  generate_temperature: 0.8
+  generate_top_p: 0.9
+  n_eval_samples: 50
+  eval_out_csv: "saved/v5-bonus/eval_results.csv"
+  eval_audio_dir: null
+ckpt: null
+text: null
+out: "tts_sample.wav"
